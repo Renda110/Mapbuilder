@@ -1,0 +1,186 @@
+[MappingApplication]
+
+
+//phase 1 start:
+REFERENCE_POSITION_LATITUDE = -34.945733
+REFERENCE_POSITION_LONGITUDE = 138.5868833
+
+
+//phase 2 start:
+//REFERENCE_POSITION_LATITUDE = -34.9469666
+//REFERENCE_POSITION_LONGITUDE = 138.5874666
+
+//phase 3 start:
+//REFERENCE_POSITION_LATITUDE = -34.947633
+//REFERENCE_POSITION_LONGITUDE = 138.5867666
+
+
+
+
+//UWA EE building:
+//REFERENCE_POSITION_LATITUDE  = -31.979108
+//REFERENCE_POSITION_LONGITUDE = 115.816326
+
+//Flinders building lab 360:
+//REFERENCE_POSITION_LATITUDE  = -35.029446
+//REFERENCE_POSITION_LONGITUDE = 138.573082
+
+//Baracks reference position
+//REFERENCE_POSITION_LATITUDE = -34.871014
+//REFERENCE_POSITION_LONGITUDE = 138.620926
+
+
+
+
+
+GENERATED_MAP_FORMAT = png
+
+
+maxSecBetweenTileSend = 2.5
+//trying best-effort, send more often?
+//for normal use, set this to 5.0 
+//tiles will be sent every 5 seconds (unless submap complete first)
+
+
+newSubmapDistanceThreshold = 2.0
+//for challenge set to 5.0
+//new submaps started every XXm 
+
+
+generatedMapSizeMultiple = 128
+//output map is rounded to multiples of 256 pixels for HMI
+
+
+submapMatchingMinimumOccupiedCellCount = 120
+//120
+
+//submap's need more than this number of occupied=Black cells before matching will be attempted. 
+
+
+//percentage:
+submapMatchingScoreThreshold = 0.25
+//1.5 0.25
+submapMatchingScoreThresholdWithPrior = 0.2
+//1.6 1.2 0.2
+//submap matching score must be > this percentage of avg(OccupiedCellCount's)
+
+
+//fix UTM zone from these coordinates, doesn't need to be exact
+//robots will start at this location until they receive a GPS fix
+//in degrees, not radians
+
+
+//error in meters for HMI vehicle ref positions
+HMI_VEHICLE_POSITION_ERROR_STDEV = 10.0
+
+//error in meters for HMI GROUND TRUTH CONSTRAINTS
+//user should be able to click within 6 pixels (95% conf)
+HMI_GROUND_TRUTH_CONSTRAINT_ERROR_LIN_STDEV = 0.3
+//degrees:
+HMI_GROUND_TRUTH_CONSTRAINT_ERROR_ANG_STDEV = 5.0
+
+
+COMPASS_HEADING_STATIC_ERROR_STDEV = 90
+//degrees //not moving, away from large metal objects
+
+COMPASS_HEADING_DYNAMIC_ERROR_STDEV = 1.0
+// degrees //between samples, gyro's are much more accurate
+
+
+WHEEL_SLIPPAGE_FORWARD_PER_METER_STDEV  = 0.5
+WHEEL_SLIPPAGE_SIDEWAYS_PER_METER_STDEV = 0.2
+//0.5=50% wheel slip= very high
+
+
+//limits for icp pose correction, dead reckons if outside these limits:
+//this is the correction between ICP pose updates, every localizationXXDist (see below)
+ICP_POSE_CORRECTION_MAX_LIN_DIST =  0.4   //threshold (meters)  
+ICP_POSE_CORRECTION_MAX_ANG_DIST = 1.0   //threshold (degrees)
+//stops linear slipping in corridors
+//angular is likely to be less of a problem
+
+
+//forward offset of sick laser scanner in meters
+laserScannerCalibrationForwardOffset = 0.125
+
+
+//minimum amounts the optimiser needs to move 
+//a submap before it's pose is adjusted/resent over DDS
+SUBMAP_POSE_CORRECTION_MIN_LIN_DIST = 0.1
+SUBMAP_POSE_CORRECTION_MIN_ANG_DIST = 0.29
+//linear: one occ grid cell, 
+//angular: 10cm @ 20m range... x = invsin( 0.1/20 ) in degrees
+
+
+
+/////////////
+
+//  Parameters of ICP inside the ICP-based SLAM class
+// The maximum number of iterations to execute if convergence is not achieved before
+maxIterations=60
+// Initial maximum distance for matching a pair of points
+thresholdDist=2.0
+// An angular factor (in degrees) to increase the matching distance for distant points.
+thresholdAng_DEG=7
+
+// After convergence, the thresholds are multiplied by this constant and ICP keep running (provides finer matching)
+ALFA=0.50
+// This is the smallest the distance threshold can become after stopping ICP and accepting the result.
+smallestThresholdDist=0.05
+// 1: Use the closest points only, 0: Use all the correspondences within the threshold (more robust sometimes, but slower)
+onlyClosestCorrespondences=1
+
+// 0: icpClassic
+// 1: icpLevenbergMarquardt
+// 2: icpIKF
+ICP_algorithm = 1
+
+//better covariance est, no obvious speed penalty:
+doRANSAC = 0
+
+
+localizationLinDistance	= 0.01  // distance threshold for running ICP (meters)  
+localizationAngDistance	= 1.0   // distance threshold for running ICP (degrees)
+insertionLinDistance	= 0.2	// distance threshold for inserting observations in the map (meters)
+insertionAngDistance	= 20.0	// distance threshold for inserting observations in the map (degrees)
+
+minICPgoodnessToAccept	= 0.60	// Minimum ICP quality to accept correction [0,1].
+
+//matchAgainstTheGrid = true
+
+// Creation of maps:
+occupancyGrid_count=1
+pointsMap_count=1
+
+// Selection of map for likelihood: (fuseAll=-1,occGrid=0, points=1,landmarks=2,gasGrid=3)
+likelihoodMapSelection=-1
+
+
+
+[MappingApplication_pointsMap_00_insertOpts]
+minDistBetweenLaserPoints   = 0.1
+fuseWithExisting            = true
+isPlanarMap                 = 1
+maxDistanceInsertion=20.0
+considerInvalidRangesAsFreeSpace=1
+
+
+
+[MappingApplication_pointsMap_00_likelihoodOpts]
+//max_corr_distance	= 5.0
+//sigma_dist		= 0.05
+
+
+[MappingApplication_occupancyGrid_00_creationOpts]
+resolution=0.10  
+//disableSaveAs3DObject=1
+
+
+[MappingApplication_occupancyGrid_00_insertOpts]
+mapAltitude=0
+useMapAltitude=0
+maxDistanceInsertion=20.0
+//maxOccupancyUpdateCertainty=0.30
+considerInvalidRangesAsFreeSpace=1
+minLaserScanNoiseStd=0.001
+

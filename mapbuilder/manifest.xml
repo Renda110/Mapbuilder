@@ -1,0 +1,10 @@
+<package>
+	<description brief="example package tutorial">A simple tutorial package</description>
+	<author>Your Name Here</author>
+	<license>BSD</license>
+        <rosdep name="opengl"/>
+        <!-- <depend package="mrpt_libs" /> -->
+	<depend package="roscpp" />
+	<depend package="std_msgs" />
+        <depend package="tf" />
+</package>
